@@ -26,7 +26,6 @@ class SquareCC(BasePaymentProvider):
     verbose_name = "Square"
     public_name = "Credit card"
     method = "card"
-    payment_form_fields = OrderedDict([])
 
     def __init__(self, event):
         super().__init__(event)
