@@ -25,6 +25,5 @@ class PluginApp(PluginConfig):
     def ready(self):
         from . import signals  # NOQA
 
-
     def is_available(self, event=None):
         return True
