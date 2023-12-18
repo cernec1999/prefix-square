@@ -48,18 +48,26 @@ def signal_process_response(
         csps = {
             "connect-src": [
                 "https://connect.squareupsandbox.com/",
+                "https://connect.squareup.com/",
                 "https://pci-connect.squareupsandbox.com/",
+                "https://pci-connect.squareup.com/",
                 "https://o160250.ingest.sentry.io",
             ],
             "frame-src": [
-                "https://sandbox.web.squarecdn.com",
+                "https://*.squarecdn.com",
                 "https://connect.squareupsandbox.com/",
+                "https://connect.squareup.com/",
                 "https://api.squareupsandbox.com/",
+                "https://api.squareup.com/",
             ],
-            "script-src": ["https://sandbox.web.squarecdn.com"],
-            "style-src": ["'unsafe-inline'", "https://sandbox.web.squarecdn.com"],
+            "script-src": [
+                "https://*.squarecdn.com",
+                "https://js.squareupsandbox.com",
+                "https://js.squareup.com",
+            ],
+            "style-src": ["'unsafe-inline'", "https://*.squarecdn.com"],
             "font-src": [
-                "https://square-fonts-production-f.squarecdn.com/",
+                "https://*.squarecdn.com/",
                 "https://d1g145x70srn7h.cloudfront.net/",
             ],
         }

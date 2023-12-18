@@ -8,6 +8,7 @@ const locationId = 'FIXME';
 
 function loadSquareSdk() {
     return new Promise((resolve, reject) => {
+        /* TODO: Replace with production URL */
         $.getScript('https://sandbox.web.squarecdn.com/v1/square.js')
             .done(function (script, textStatus) {
                 resolve();
