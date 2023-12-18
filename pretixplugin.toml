@@ -1,0 +1,5 @@
+[plugin]
+package = "pretix-square"
+modules = [ "pretix_square" ]
+marketplace_name = "square"
+

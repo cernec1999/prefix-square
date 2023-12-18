@@ -1,0 +1,43 @@
+[project]
+name = "pretix-square"
+dynamic = ["version"]
+description = "Accept payments via Square."
+readme = "README.rst"
+license = {text = "Apache"}
+keywords = ["pretix"]
+authors = [
+    {name = "Chris Cerne", email = "contact@ccerne.com"},
+]
+maintainers = [
+    {name = "Chris Cerne", email = "contact@ccerne.com"},
+]
+
+dependencies = [
+  "squareup"
+]
+
+[project.entry-points."pretix.plugin"]
+pretix_square = "pretix_square:PretixPluginMeta"
+
+[project.entry-points."distutils.commands"]
+build = "pretix_plugin_build.build:CustomBuild"
+
+[build-system]
+requires = [
+    "setuptools",
+    "pretix-plugin-build",
+]
+
+[project.urls]
+homepage = "https://github.com/cernec1999/prefix-square"
+repository = "https://github.com/cernec1999/prefix-square"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {attr = "pretix_square.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["pretix*"]
+namespaces = false
