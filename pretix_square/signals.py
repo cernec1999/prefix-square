@@ -33,12 +33,11 @@ def signal_process_response(
     sender, request: HttpRequest, response: HttpResponse, **kwargs
 ):
     url = resolve(request.path_info)
-
     if (
         url.url_name == "event.order.pay.change"
         or url.url_name == "event.order.pay"
         or (url.url_name == "event.checkout" and url.kwargs["step"] == "payment")
-        or (url.namespace == "plugins:stripe" and url.url_name in ["sca", "sca.return"])
+        or (url.namespace == "plugins:square" and url.url_name in ["sca", "sca.return"])
     ):
         if "Content-Security-Policy" in response:
             h = _parse_csp(response["Content-Security-Policy"])
@@ -47,42 +46,45 @@ def signal_process_response(
 
         # Unfortunately, the official Square documentation is incomplete. We should verify
         # that these are the only CSPs required for Square Checkout.
+        # csps = {
+        #     "connect-src": [
+        #         "https://connect.squareupsandbox.com/",
+        #         "https://connect.squareup.com/",
+        #         "https://pci-connect.squareupsandbox.com/",
+        #         "https://pci-connect.squareup.com/",
+        #         "https://o160250.ingest.sentry.io/",
+        #     ],
+        #     "frame-src": [
+        #         "https://*.squarecdn.com/",
+        #         "https://connect.squareupsandbox.com/",
+        #         "https://connect.squareup.com/",
+        #         "https://api.squareupsandbox.com/",
+        #         "https://api.squareup.com/",
+        #         "https://geoissuer.cardinalcommerce.com/",
+        #     ],
+        #     "script-src": [
+        #         "https://*.squarecdn.com/",
+        #         "https://js.squareupsandbox.com/",
+        #         "https://js.squareup.com/",
+        #     ],
+        #     "style-src": ["'unsafe-inline'", "https://*.squarecdn.com/"],
+        #     "font-src": [
+        #         "https://*.squarecdn.com/",
+        #         "https://d1g145x70srn7h.cloudfront.net/",
+        #     ],
+        # }
+
+
+        # This is a temporary fix to allow pretix to work with Square SCA
         csps = {
-            "connect-src": [
-                "https://connect.squareupsandbox.com/",
-                "https://connect.squareup.com/",
-                "https://pci-connect.squareupsandbox.com/",
-                "https://pci-connect.squareup.com/",
-                "https://o160250.ingest.sentry.io/",
-            ],
-            "frame-src": [
-                "https://*.squarecdn.com/",
-                "https://connect.squareupsandbox.com/",
-                "https://connect.squareup.com/",
-                "https://api.squareupsandbox.com/",
-                "https://api.squareup.com/",
-                "https://geoissuer.cardinalcommerce.com/",
-            ],
-            "script-src": [
-                "https://*.squarecdn.com/",
-                "https://js.squareupsandbox.com/",
-                "https://js.squareup.com/",
-            ],
-            "style-src": ["'unsafe-inline'", "https://*.squarecdn.com/"],
-            "font-src": [
-                "https://*.squarecdn.com/",
-                "https://d1g145x70srn7h.cloudfront.net/",
-            ],
+            "connect-src": ["*"],
+            "frame-src": ["*"],
+            "script-src": ["*"],
+            "style-src": ["*"],
+            "font-src": ["*"]
         }
 
         _merge_csp(h, csps)
-
-        # Old code
-        # if h:
-        #     response["Content-Security-Policy"] = _render_csp(h)
-
-        # TODO: For now, due to SCA, remove the CSP header.
-        if "Content-Security-Policy" in response:
-            del response["Content-Security-Policy"]
-
+        if h:
+            response["Content-Security-Policy"] = _render_csp(h)
     return response
