@@ -46,6 +46,47 @@ class SquareCC(BasePaymentProvider):
         return template.render(ctx)
 
     @property
+    def settings_form_fields(self):
+        # TODO: Implement
+        return {}
+        fields = [
+            ('client_id',
+                forms.CharField(
+                    label=_('Client ID'),
+                    max_length=80,
+                    min_length=80,
+                    help_text=_('<a target="_blank" rel="noopener" href="{docs_url}">{text}</a>').format(
+                        text=_('Click here for a tutorial on how to obtain the required keys'),
+                        docs_url='https://docs.pretix.eu/en/latest/user/payments/paypal.html'
+                    )
+                )),
+            ('secret',
+                forms.CharField(
+                    label=_('Secret'),
+                    max_length=80,
+                    min_length=80,
+                )),
+            ('mode',
+                forms.ChoiceField(
+                    label=_('Mode'),
+                    initial='live',
+                    choices=(
+                        ('live', 'Live'),
+                        ('sandbox', 'Sandbox'),
+                    ),
+                )),
+        ]
+
+        d = OrderedDict(
+            fields + list(super().settings_form_fields.items())
+        )
+
+        # d.move_to_end('prefix')
+        # d.move_to_end('postfix')
+        # d.move_to_end('_enabled', False)
+        return d
+
+    @property
     def payment_form_fields(self):
         # Just get the customer first name, last name, and billing address
         return OrderedDict(
@@ -80,12 +121,12 @@ class SquareCC(BasePaymentProvider):
                 ),
                 (
                     "state",
-                    forms.CharField(label=_("State"), max_length=255, required=True),
+                    forms.CharField(label=_("State"), max_length=255, required=True, initial="VA"),
                 ),
                 (
                     "country_code",
                     forms.CharField(
-                        label=_("Country code"), max_length=2, required=True
+                        label=_("Country Code"), max_length=2, required=True, initial="US"
                     ),
                 ),
             ]

@@ -69,6 +69,10 @@ async function init() {
 
         $('.square-container').closest("form").submit(
             function (event) {
+                /* Ensure the correct payment method is selected */
+                if (!$("input[name=payment][value=square]").prop('checked')) {
+                    return;
+                }
                 event.preventDefault();
                 handlePaymentMethodSubmission(card);
             }

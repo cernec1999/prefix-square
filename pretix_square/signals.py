@@ -45,27 +45,30 @@ def signal_process_response(
         else:
             h = {}
 
+        # Unfortunately, the official Square documentation is incomplete. We should verify
+        # that these are the only CSPs required for Square Checkout.
         csps = {
             "connect-src": [
                 "https://connect.squareupsandbox.com/",
                 "https://connect.squareup.com/",
                 "https://pci-connect.squareupsandbox.com/",
                 "https://pci-connect.squareup.com/",
-                "https://o160250.ingest.sentry.io",
+                "https://o160250.ingest.sentry.io/",
             ],
             "frame-src": [
-                "https://*.squarecdn.com",
+                "https://*.squarecdn.com/",
                 "https://connect.squareupsandbox.com/",
                 "https://connect.squareup.com/",
                 "https://api.squareupsandbox.com/",
                 "https://api.squareup.com/",
+                "https://geoissuer.cardinalcommerce.com/",
             ],
             "script-src": [
-                "https://*.squarecdn.com",
-                "https://js.squareupsandbox.com",
-                "https://js.squareup.com",
+                "https://*.squarecdn.com/",
+                "https://js.squareupsandbox.com/",
+                "https://js.squareup.com/",
             ],
-            "style-src": ["'unsafe-inline'", "https://*.squarecdn.com"],
+            "style-src": ["'unsafe-inline'", "https://*.squarecdn.com/"],
             "font-src": [
                 "https://*.squarecdn.com/",
                 "https://d1g145x70srn7h.cloudfront.net/",
@@ -74,7 +77,12 @@ def signal_process_response(
 
         _merge_csp(h, csps)
 
-        if h:
-            response["Content-Security-Policy"] = _render_csp(h)
+        # Old code
+        # if h:
+        #     response["Content-Security-Policy"] = _render_csp(h)
+
+        # TODO: For now, due to SCA, remove the CSP header.
+        if "Content-Security-Policy" in response:
+            del response["Content-Security-Policy"]
 
     return response
